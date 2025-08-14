@@ -1,0 +1,120 @@
+#!/bin/bash
+
+# Universal Startup Script for URL Shortener
+# Automatically detects OS and runs the appropriate startup method
+
+echo "🚀 URL Shortener - Universal Startup Script"
+echo "============================================"
+
+# Function to detect operating system
+detect_os() {
+    if [[ "$OSTYPE" == "linux-gnu"* ]]; then
+        echo "🐧 Linux detected - Using bash script"
+        OS="linux"
+        SCRIPT="start.sh"
+    elif [[ "$OSTYPE" == "darwin"* ]]; then
+        echo "🍎 macOS detected - Using bash script"
+        OS="macos"
+        SCRIPT="start.sh"
+    elif [[ "$OSTYPE" == "msys" ]] || [[ "$OSTYPE" == "cygwin" ]] || [[ "$OSTYPE" == "win32" ]]; then
+        echo "🪟 Windows detected - Using batch script"
+        OS="windows"
+        SCRIPT="start.bat"
+    else
+        echo "❓ Unknown OS: $OSTYPE"
+        echo "🔄 Attempting to use bash script as fallback..."
+        OS="unknown"
+        SCRIPT="start.sh"
+    fi
+}
+
+# Function to check if script exists
+check_script() {
+    if [ -f "$SCRIPT" ]; then
+        echo "✅ Startup script found: $SCRIPT"
+        return 0
+    else
+        echo "❌ Startup script not found: $SCRIPT"
+        return 1
+    fi
+}
+
+# Function to run appropriate script
+run_script() {
+    if [ "$OS" = "windows" ]; then
+        echo "🔄 Starting Windows batch script..."
+        cmd //c "$SCRIPT"
+    else
+        echo "🔄 Starting bash script..."
+        bash "$SCRIPT"
+    fi
+}
+
+# Function to fallback to Python directly
+fallback_python() {
+    echo "🔄 Falling back to direct Python execution..."
+    echo "📦 Checking Python installation..."
+    
+    if command -v python3 &> /dev/null; then
+        PYTHON_CMD="python3"
+    elif command -v python &> /dev/null; then
+        PYTHON_CMD="python"
+    else
+        echo "❌ Python is not installed!"
+        echo "Please install Python 3.7+ and try again."
+        exit 1
+    fi
+    
+    echo "✅ Python found: $($PYTHON_CMD --version)"
+    
+    # Check if virtual environment exists
+    if [ -d "venv" ]; then
+        echo "📁 Virtual environment found, activating..."
+        source venv/bin/activate
+    else
+        echo "📦 Creating virtual environment..."
+        $PYTHON_CMD -m venv venv
+        source venv/bin/activate
+    fi
+    
+    echo "📥 Installing dependencies..."
+    pip install -r requirements.txt
+    
+    echo "🌐 Starting Flask Application..."
+    echo "📱 Open your browser and go to: http://localhost:5000"
+    echo "⏹️  Press Ctrl+C to stop the application"
+    echo "========================================"
+    
+    python app.py
+}
+
+# Main execution
+main() {
+    # Detect OS
+    detect_os
+    
+    # Check if startup script exists
+    if check_script; then
+        # Run the appropriate script
+        run_script
+    else
+        echo "⚠️  Startup script not found, using fallback method..."
+        fallback_python
+    fi
+}
+
+# Check if we're in the right directory
+if [ ! -f "app.py" ]; then
+    echo "❌ app.py not found in current directory"
+    echo "Please run this script from the url-builder directory"
+    exit 1
+fi
+
+if [ ! -f "requirements.txt" ]; then
+    echo "❌ requirements.txt not found in current directory"
+    echo "Please run this script from the url-builder directory"
+    exit 1
+fi
+
+# Run main function
+main
