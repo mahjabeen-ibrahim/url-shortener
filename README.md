@@ -11,15 +11,12 @@ A clean, modern URL shortening web application built with Flask, HTML, and CSS.
 - **Clean UI**: Modern, intuitive interface with smooth animations
 - **SQLite Database**: Lightweight database for storing URL data
 
-## Screenshots
-
-The application features a beautiful gradient background with clean white cards, modern typography, and responsive design that works on all devices.
 
 ## Installation
 
-1. **Clone the repository** (if you haven't already):
+1. **Clone the repository**:
    ```bash
-   git clone <repository-url>
+   git clone https://github.com/mahjabeen-ibrahim/url-shortener.git
    cd url-builder
    ```
 
@@ -82,9 +79,7 @@ start.bat
    - Click "Shorten" to generate a short link
    - Copy and share the shortened URL
 
-4. **View Statistics**:
-   - Click "Statistics" in the footer to see analytics
-   - Track clicks and view all shortened URLs
+
 
 ## How It Works
 
@@ -105,7 +100,6 @@ url-builder/
 ├── start.sh           # Linux/macOS startup script
 ├── start.bat          # Windows startup script
 ├── run.py             # Python startup script
-├── test_app.py        # Testing script
 ├── templates/         # HTML templates
 │   ├── index.html     # Main page
 │   └── stats.html     # Statistics page
