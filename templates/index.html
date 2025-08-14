@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>URL Shortener</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <h1 class="title">URL Shortener</h1>
+            <p class="subtitle">Shorten your long URLs into compact, shareable links</p>
+        </header>
+
+        <main class="main">
+            <div class="form-container">
+                <form method="POST" action="{{ url_for('shorten_url') }}" class="url-form">
+                    <div class="input-group">
+                        <input 
+                            type="url" 
+                            name="url" 
+                            placeholder="Enter your long URL here..." 
+                            class="url-input"
+                            required
+                        >
+                        <button type="submit" class="submit-btn">
+                            <span>Shorten</span>
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M5 12h14M12 5l7 7-7 7"/>
+                            </svg>
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    <div class="messages">
+                        {% for category, message in messages %}
+                            <div class="message message-{{ category }}">
+                                {{ message }}
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            {% endwith %}
+
+            <div class="features">
+                <div class="feature">
+                    <div class="feature-icon">🚀</div>
+                    <h3>Fast & Reliable</h3>
+                    <p>Instant URL shortening with 99.9% uptime</p>
+                </div>
+                <div class="feature">
+                    <div class="feature-icon">🔒</div>
+                    <h3>Secure</h3>
+                    <p>Your URLs are safe and encrypted</p>
+                </div>
+                <div class="feature">
+                    <div class="feature-icon">📊</div>
+                    <h3>Analytics</h3>
+                    <p>Track clicks and monitor performance</p>
+                </div>
+            </div>
+        </main>
+
+        <footer class="footer">
+            <nav class="nav">
+                <a href="{{ url_for('index') }}" class="nav-link">Home</a>
+                <a href="{{ url_for('stats') }}" class="nav-link">Statistics</a>
+            </nav>
+            <p class="copyright">&copy; 2024 URL Shortener. Built with Flask.</p>
+        </footer>
+    </div>
+</body>
+</html>

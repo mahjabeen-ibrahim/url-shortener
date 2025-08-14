@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>URL Statistics - URL Shortener</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <h1 class="title">URL Statistics</h1>
+            <p class="subtitle">Track your shortened URLs and their performance</p>
+        </header>
+
+        <main class="main">
+            <div class="stats-container">
+                {% if urls %}
+                    <div class="stats-summary">
+                        <div class="stat-card">
+                            <h3>Total URLs</h3>
+                            <p class="stat-number">{{ urls|length }}</p>
+                        </div>
+                        <div class="stat-card">
+                            <h3>Total Clicks</h3>
+                            <p class="stat-number">{{ urls|sum(attribute=3) }}</p>
+                        </div>
+                    </div>
+
+                    <div class="urls-table-container">
+                        <h2>All Shortened URLs</h2>
+                        <div class="table-wrapper">
+                            <table class="urls-table">
+                                <thead>
+                                    <tr>
+                                        <th>Original URL</th>
+                                        <th>Short Code</th>
+                                        <th>Created</th>
+                                        <th>Clicks</th>
+                                        <th>Short URL</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for url in urls %}
+                                    <tr>
+                                        <td class="original-url">
+                                            <a href="{{ url[0] }}" target="_blank" title="{{ url[0] }}">
+                                                {{ url[0][:50] }}{% if url[0]|length > 50 %}...{% endif %}
+                                            </a>
+                                        </td>
+                                        <td class="short-code">{{ url[1] }}</td>
+                                        <td class="created-date">{{ url[2] }}</td>
+                                        <td class="clicks">{{ url[3] }}</td>
+                                        <td class="short-url">
+                                            <a href="{{ request.host_url }}{{ url[1] }}" target="_blank">
+                                                {{ request.host_url }}{{ url[1] }}
+                                            </a>
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                {% else %}
+                    <div class="empty-state">
+                        <div class="empty-icon">📊</div>
+                        <h3>No URLs Yet</h3>
+                        <p>Start shortening URLs to see statistics here!</p>
+                        <a href="{{ url_for('index') }}" class="btn-primary">Shorten Your First URL</a>
+                    </div>
+                {% endif %}
+            </div>
+        </main>
+
+        <footer class="footer">
+            <nav class="nav">
+                <a href="{{ url_for('index') }}" class="nav-link">Home</a>
+                <a href="{{ url_for('stats') }}" class="nav-link">Statistics</a>
+            </nav>
+            <p class="copyright">&copy; 2024 URL Shortener. Built with Flask.</p>
+        </footer>
+    </div>
+</body>
+</html>
